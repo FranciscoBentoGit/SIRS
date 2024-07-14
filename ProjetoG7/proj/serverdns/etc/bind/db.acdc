@@ -1,0 +1,12 @@
+$TTL    60000
+@               IN      SOA     dnsacdc.acdc.pt.    root.dnsacdc.acdc.pt. (
+                        2021040501 ; serial
+                        28 ; refresh
+                        14 ; retry
+                        3600000 ; expire
+                        0 ; negative cache ttl
+                        )
+@               IN     NS      dnsacdc.acdc.pt.
+dnsacdc         IN     A       95.92.196.2
+www             IN     A       95.92.196.3
+historian       IN     A       95.92.195.2

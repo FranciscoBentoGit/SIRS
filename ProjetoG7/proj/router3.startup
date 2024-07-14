@@ -1,0 +1,25 @@
+ip addr add dev eth0 95.92.194.2/24
+ip link set dev eth0 up
+ip addr add dev eth1 169.254.2.2/24
+ip link set dev eth1 up
+ip addr add dev eth2 169.254.3.2/24
+ip link set dev eth2 up
+
+ip route add 95.92.192.0/24 via 169.254.2.1
+ip route add 95.92.193.0/24 via 169.254.3.1
+ip route add 95.92.195.0/24 via 95.92.194.1
+ip route add 95.92.196.0/24 via 95.92.194.1
+ip route add 95.92.197.0/24 via 95.92.194.1
+ip route add 80.60.0.0/22 via 95.92.194.1
+
+
+#Fazer flush
+iptables-F
+#Whitelist
+iptables-legacy -P FORWARD DROP
+
+#Permitir apenas acesso das Subestações para a Lan Scada e vice versa
+iptables-legacy -A FORWARD --source 95.92.194.0/24 -d 95.92.192.0/24 -j ACCEPT
+iptables-legacy -A FORWARD --source 95.92.194.0/24 -d 95.92.193.0/24 -j ACCEPT
+iptables-legacy -A FORWARD --source 95.92.192.0/24 -d 95.92.194.0/24 -j ACCEPT
+iptables-legacy -A FORWARD --source 95.92.193.0/24 -d 95.92.194.0/24 -j ACCEPT

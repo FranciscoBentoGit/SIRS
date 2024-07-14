@@ -1,0 +1,18 @@
+# The primary network interface
+auto lo eth1 eth2
+
+iface lo inet loopback
+
+iface eth1 inet static
+	address 95.92.197.1
+	netmask 255.255.255.0
+	broadcast 95.92.197.255
+
+
+iface eth2 inet static
+	address 95.92.194.1
+	netmask 255.255.255.0
+	broadcast 95.92.194.255
+
+
+

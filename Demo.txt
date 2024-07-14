@@ -1,0 +1,86 @@
+#Estrutura Básica
+	-DNS
+		-ping/dig teste.pt no pc1 para ver quem tem a autoridade
+
+	-DHCP
+		-ip route no admin
+		-cat /var/lib/dhcp/dhclient.eth0.leases 
+	
+	-Acesso ao WebServer(através de DNS)
+		-curl -v 'http://www.acdc.pt/team/admin/index.html' no admin
+	
+	-DNS
+		-dig historian.acdc.pt no admin
+
+
+	-DHCP
+		-cat /var/lib/dhcp/dhclient.eth0.leases no pc2
+			
+
+	-DHCP
+		-cat /var/lib/dhcp/dhclient.eth0.leases no pc4	
+
+
+	-DHCP
+		-cat /var/lib/dhcp/dhclient.eth0.leases no pc5
+
+#Serviço SSH
+	
+	-SSH(através do user admin presente em ambos DNS e WWW e com uso de DNS)
+		- su - user (funciona para pc1,pc3 ou admin)
+		
+		- ssh admin@www.acdc.pt
+		- exit
+		
+		OU
+		
+		- ssh admin@dnsacdc.acdc.pt
+		- exit
+
+#Serviço IDS
+	-IDS
+		Escolher se queremos testar na subrede Corporate(eth1) ou na DMZ(eth4)
+		- snort -A console -i eth1 -u snort -g snort -c /etc/snort/snort.conf no router2
+		- ping [95.92.197.10/95.92.197.11] no pc1
+		- observar output no router2
+		- control z
+		- snort -A console -i eth4 -u snort -g snort -c /etc/snort/snort.conf no router2
+		- su - user no pc1
+		- ssh admin@www.acdc.pt 
+		- exit (no ssh,ATENCAO ESPERAR 7 SEG APOS O SSH PARA FAZER O EXIT)
+		- observar output no router2
+		- control z
+		
+		
+
+#Serviço HTTPS
+	-HTTPS
+		-curl 'https://www.acdc.pt' no pc admin
+		-curl 'https://www.acdc.pt/team/admin/index.html' no pc admin
+		-curl 'https://www.acdc.pt' no pc3 não vai funcionar
+		-curl -k 'https://www.acdc.pt' no pc3 funciona porque ignora a validação do certificado
+
+#Serviço Firewall
+	-Firewall
+		#Bloquer acesso da Internet que não seja para a DMZ e que não seja DNS/SSH
+		- dig www.acdc.pt no pc1
+		- su - user
+		- ssh admin@www.acdc.pt
+		- exit
+		- ping www.acdc.pt (verificar que não passa na firewall)
+
+		#Bloquear DNS vindo do historian
+		- ping www.acdc.pt no historian ( fazer control c para desbloquear)
+		- ping 95.92.196.3 (ver que funciona)
+
+		#Bloquear ICMP que não seja entre Lan Corporate e Internet
+		- ping 95.92.194.10 no dnspt (verificar que não passa)
+
+		#Permitir apenas acesso das Subestações para a Lan Scada e vice versa
+		-ping 95.92.194.10 no pc 5
+		-ping 95.92.192.10 no pc 2
+		-ping 95.92.192.10 no historian (ver que não permite)
+		-ping 95.92.193.10 no pc 3 (ver que não permite)
+		
+
+

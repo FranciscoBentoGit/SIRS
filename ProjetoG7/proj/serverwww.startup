@@ -1,0 +1,18 @@
+ip addr add dev eth0 95.92.196.3/24
+ip link set dev eth0 up
+
+ip route add default via 95.92.196.1
+
+/etc/init.d/apache2 start
+a2enmod ssl
+service apache2 restart
+/etc/init.d/ssh start
+adduser admin --gecos "" --disabled-password
+echo "admin:admin" | chpasswd
+su - admin -c "mkdir .ssh"
+su - admin -c "chmod 700 .ssh"
+su - admin -c "touch .ssh/authorized_keys"
+su - admin -c "cat /shared/pcadmin/id_rsa.pub >> .ssh/authorized_keys"
+su - admin -c "cat /shared/pc3/id_rsa.pub >> .ssh/authorized_keys"
+su - admin -c "cat /shared/pc1/id_rsa.pub >> .ssh/authorized_keys"
+

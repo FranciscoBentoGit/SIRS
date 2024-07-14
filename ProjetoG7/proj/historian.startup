@@ -1,0 +1,4 @@
+ip addr add dev eth0 95.92.195.2/24
+ip link set dev eth0 up
+ip route add default via 95.92.195.1
+

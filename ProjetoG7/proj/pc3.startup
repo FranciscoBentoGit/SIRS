@@ -1,0 +1,10 @@
+service networking restart
+/etc/init.d/ssh start
+
+adduser user --gecos "" --disabled-password
+echo "user:user" | chpasswd
+su - user -c "mkdir .ssh"
+su - user -c "touch .ssh/known_hosts"
+su - user -c "cat /shared/pc3/known_hosts >> .ssh/known_hosts"
+su - user -c "scp /shared/pc3/id_rsa .ssh"
+su - user -c "scp /shared/pc3/id_rsa.pub .ssh"

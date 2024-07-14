@@ -1,0 +1,2 @@
+alert tcp 80.60.0.0/22 any -> [95.92.196.2,95.92.196.3] 22 (msg:"Dangerous DNS Ping-possible cache poisoning";sid:10000001; rev:001;)
+alert icmp 80.60.0.0/22 any -> [95.92.197.10,95.92.197.11] any (msg:"Dangerous Ping to Corporate PCs";sid:10000002; rev:001;)

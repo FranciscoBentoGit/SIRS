@@ -1,0 +1,12 @@
+ip addr add dev eth0 80.60.0.2/22
+ip link set dev eth0 up
+ip route add default via 80.60.0.1
+/etc/init.d/ssh start
+
+adduser user --gecos "" --disabled-password
+echo "user:user" | chpasswd
+su - user -c "mkdir .ssh"
+su - user -c "touch .ssh/known_hosts"
+su - user -c "cat /shared/pc1/known_hosts >> .ssh/known_hosts"
+su - user -c "scp /shared/pc1/id_rsa .ssh"
+su - user -c "scp /shared/pc1/id_rsa.pub .ssh"

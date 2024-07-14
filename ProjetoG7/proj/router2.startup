@@ -1,0 +1,34 @@
+ip addr add dev eth0 169.254.1.1/24
+ip link set dev eth0 up
+ip addr add dev eth1 95.92.197.1/24
+ip link set dev eth1 up
+ip addr add dev eth2 95.92.194.1/24
+ip link set dev eth2 up
+ip addr add dev eth3 95.92.195.1/24
+ip link set dev eth3 up
+ip addr add dev eth4 95.92.196.1/24
+ip link set dev eth4 up
+
+ip route add 80.60.0.0/22 via 169.254.1.2
+ip route add 95.92.192.0/24 via 95.92.194.2
+ip route add 95.92.193.0/24 via 95.92.194.2
+service isc-dhcp-server restart
+
+scp /shared/snort.conf /etc/snort
+scp /shared/local.rules /etc/snort/rules/
+
+#Fazer flush
+iptables-F
+#Blacklist
+iptables-legacy -P FORWARD ACCEPT
+
+#Bloquer acesso da Internet que não seja para a DMZ e que não seja DNS/SSH
+iptables-legacy -A FORWARD -p tcp --source 80.60.0.0/22 ! -d 95.92.196.0/24 ! --dport 22 -j DROP
+iptables-legacy -A FORWARD -p udp --source 80.60.0.0/22 ! -d 95.92.196.0/24 ! --dport 53 -j DROP
+
+#Bloquear DNS vindo do historian
+iptables-legacy -A FORWARD -p udp --source 95.92.195.2  -d 95.92.196.2 --dport 53 -j DROP
+
+#Bloquear ICMP que não seja entre Lan Corporate e Internet
+iptables-legacy -A FORWARD -p icmp ! --source 95.92.197.0/24 -d 80.60.0.0/22 -j DROP
+iptables-legacy -A FORWARD -p icmp --source 80.60.0.0/22 ! -d 95.92.197.0/24 -j DROP
